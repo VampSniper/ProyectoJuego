@@ -127,7 +127,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\OneDrive\Documentos\5S1-Co clase IA\programacion grafica_3TCo\OpenGL\OpenGL\include\STB\stb_image.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Jugador.h" />
+    <ClInclude Include="SkyBox.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="stb_image.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="skybox_bosque_abajo.jpg" />
+    <Image Include="skybox_bosque_arriba.jpg" />
+    <Image Include="skybox_bosque_atras.jpg" />
+    <Image Include="skybox_bosque_derecha.jpg" />
+    <Image Include="skybox_bosque_frente.jpg" />
+    <Image Include="skybox_bosque_izquierd.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
