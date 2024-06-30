@@ -3,6 +3,12 @@ import moderngl as mgl
 import sys
 from models import Cube
 from camera import Camera
+from music_manager import music_manager
+import subprocess
+
+music_manager.start_music()
+
+
 
 class Game:
     def __init__(self, win_size=(1000, 700)):
@@ -50,9 +56,16 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 for cube in self.cubes:
-                    cube.destroy()
-                pg.quit()
-                sys.exit()
+                    self.quit_game()
+
+    def quit_game(self):
+        # stop the music
+        music_manager.stop_music()
+        # close the game window
+        pg.quit()
+        # Run the main menu script
+        subprocess.run([sys.executable, "Python/menu.py"], check=True)
+        sys.exit()
 
     def render(self):
         #clear framebuffer
