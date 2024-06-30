@@ -1,70 +1,42 @@
-import pygame as pg
-from pyrr import Matrix44, Vector3, Quaternion
+# camera.py
+
+import pygame
+from math import cos, sin, radians  
+from OpenGL.GL import *
 
 class Camera:
-    def __init__(self, position, target, up, win_size):
-        self.position = Vector3(position)
-        self.target = Vector3(target)
-        self.up = Vector3(up)
-        self.forward = (self.target - self.position).normalized
-        self.right = self.forward.cross(self.up).normalized
-        self.win_size = win_size
+    def __init__(self, pos=(0, 0, 0)):
+        self.pos = list(pos)
+        self.rot = [0, 0]  # rotación en x, y
+    
+    def update(self):
+        glLoadIdentity()
+        glRotatef(self.rot[1], 1, 0, 0)
+        glRotatef(self.rot[0], 0, 1, 0)
+        glTranslatef(-self.pos[0], -self.pos[1], -self.pos[2])
 
-        self.view = Matrix44.look_at(
-            eye=self.position,
-            target=self.target,
-            up=self.up
-        )
-        self.projection = Matrix44.perspective_projection(
-            45.0, self.win_size[0] / self.win_size[1], 0.1, 100.0
-        )
+    def move(self, direction, amount):
+        if direction == 'forward':
+            self.pos[0] += amount * sin(radians(self.rot[0]))
+            self.pos[2] += amount * -cos(radians(self.rot[0]))
+        if direction == 'backward':
+            self.pos[0] -= amount * sin(radians(self.rot[0]))
+            self.pos[2] -= amount * -cos(radians(self.rot[0]))
+        if direction == 'left':
+            self.pos[0] -= amount * cos(radians(self.rot[0]))
+            self.pos[2] += amount * -sin(radians(self.rot[0]))
+        if direction == 'right':
+            self.pos[0] += amount * cos(radians(self.rot[0]))
+            self.pos[2] -= amount * -sin(radians(self.rot[0]))
+        #if direction == 'up':
+        #    self.pos[1] += amount
+        #if direction == 'down':
+        #    self.pos[1] -= amount
 
-        self.move_speed = 0.01
-        self.turn_speed = 0.01
-
-        self.mouse_sensitivity = 0.01
-        self.last_x, self.last_y = pg.mouse.get_pos()
-        pg.mouse.set_visible(False)
-        pg.event.set_grab(True)
-
-    def update(self, dt, keys):
-        if keys[pg.K_w]:
-            self.position += self.forward * self.move_speed
-        if keys[pg.K_s]:
-            self.position -= self.forward * self.move_speed
-        if keys[pg.K_a]:
-            self.position -= self.right * self.move_speed
-        if keys[pg.K_d]:
-            self.position += self.right * self.move_speed
-        if keys[pg.K_SPACE]:
-            self.position += self.up * self.move_speed
-        if keys[pg.K_LSHIFT]:
-            self.position += self.down * self.move_speed
-
-        x, y = pg.mouse.get_pos()
-        dx = (x - self.last_x) * self.mouse_sensitivity
-        dy = (y - self.last_y) * self.mouse_sensitivity
-        self.last_x, self.last_y = x, y
-
-        self.yaw(dx)
-        self.pitch(dy)
-
-        self.update_view_matrix()
-
-    def yaw(self, angle):
-        rotation = Quaternion.from_y_rotation(angle)
-        self.forward = Vector3(rotation * self.forward)
-        self.right = self.forward.cross(self.up).normalized
-
-    def pitch(self, angle):
-        rotation = Quaternion.from_axis_rotation(self.right, angle)
-        self.forward = Vector3(rotation * self.forward)
-        self.up = self.right.cross(self.forward).normalized
-
-    def update_view_matrix(self):
-        self.target = self.position + self.forward
-        self.view = Matrix44.look_at(
-            eye=self.position,
-            target=self.target,
-            up=self.up
-        )
+    def rotate(self, dx, dy):
+        self.rot[0] += dx
+        self.rot[1] += dy
+        if self.rot[1] > 90:
+            self.rot[1] = 90
+        elif self.rot[1] < -90:
+            self.rot[1] = -90
