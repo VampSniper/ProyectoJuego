@@ -68,6 +68,10 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
     pygame.display.set_caption("Cuidado con el cadejo")
+    
+    glEnable(GL_DEPTH_TEST)
+    glDepthFunc(GL_LESS)
+    
     #display = (800, 600)
     #pygame.display.set_mode(screen, DOUBLEBUF | OPENGL)
     #gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
@@ -90,20 +94,51 @@ def main():
     #Cargar objeto 3D
     #obj = OBJ('Modelos/obj/HotDog/hotdog.obj')
     lC = 1
-
-    lA, lB = 10, 0
+    lA, lB = 5, 0
     paredA = pared(0,0,0,lA,lB,lC)
-    lA, lB = 0, 10
+    lA, lB = 0, 9
     paredB = pared(0,0,0,lA,lB,lC)
-    lA, lB = 10, 0
-    paredC = pared(0,0,10,lA,lB,lC)
-    lA, lB = 0, 10
-    paredD = pared(10,0,0,lA,lB,lC)
+    lA, lB = 5, 0
+    paredC = pared(0,0,9,lA,lB,lC)
+    lA, lB = 0, 9
+    paredD = pared(5,0,0,lA,lB,lC)
     piso = [
         #x  y  z
-        (10, 0, 0), (0, 0, 0), (0, 0, 10), (10, 0, 10),
+        (5, 0, 0), (0, 0, 0), (0, 0, 9), (5, 0, 9),
     ]
     gen = paredA+paredB+paredC+paredD
+
+    lC = 1
+    lab0 = pared(1,0,1,1,0,lC)
+    lab1 = pared(2,0,1,0,1,lC)
+    lab2 = pared(2,0,2,2,0,lC)
+    lab3 = pared(3,0,0,0,2,lC)
+    lab4 = pared(4,0,1,0,1,lC)
+    lab5 = pared(0,0,2,1,0,lC)
+    lab6 = pared(1,0,2,0,1,lC)
+    lab7 = pared(1,0,5,1,0,lC)
+    lab8 = pared(1,0,4,0,1,lC)
+    lab9 = pared(1,0,4,1,0,lC)
+    lab10 = pared(2,0,3,0,1,lC)
+    lab11 = pared(2,0,3,1,0,lC)
+    lab12 = pared(3,0,3,0,1,lC)
+    lab13 = pared(3,0,4,1,0,lC)
+    lab14 = pared(4,0,3,0,2,lC)
+    lab15 = pared(3,0,5,1,0,lC)
+    lab16 = pared(3,0,5,0,1,lC)
+    lab17 = pared(4,0,6,0,1,lC)
+    lab18 = pared(3,0,7,1,0,lC)
+    lab19 = pared(3,0,7,0,1,lC)
+    lab20 = pared(3,0,8,1,0,lC)
+    lab21 = pared(4,0,8,0,1,lC)
+    lab22 = pared(1,0,8,0,1,lC) 
+    lab23 = pared(1,0,8,1,0,lC)
+    lab24 = pared(2,0,7,0,1,lC)
+    lab25 = pared(1,0,7,1,0,lC)
+    lab26 = pared(1,0,6,0,1,lC)
+    lab27 = pared(1,0,6,1,0,lC)
+
+    laberinto = lab0 + lab1 + lab2 + lab3 + lab4 + lab5 + lab6 + lab7 + lab8 + lab9 + lab10 + lab11 + lab12 + lab13 + lab14 + lab15 + lab16 + lab17 + lab18 + lab19 + lab20 + lab21 + lab22 + lab23 + lab24 + lab25 + lab26 + lab27
 
     tex_coords = (
         (1, 1), (1, 0), (0, 0), (0, 1),
@@ -161,6 +196,15 @@ def main():
                 glVertex3fv(piso[i + j])
         glEnd()
 
+        glBindTexture(GL_TEXTURE_2D, cerca)
+
+        glBegin(GL_QUADS)
+        for i in range(0, len(laberinto), 4):
+            for j in range(4):
+                glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
+                glVertex3fv(laberinto[i + j])
+        glEnd()
+
         # Renderizar el modelo
         #obj.render()
 
@@ -170,22 +214,22 @@ def main():
             aux = camera.rot
             camera = Camera(((camera.pos[0] + 0.25), camera.pos[1], camera.pos[2]))
             camera.rot = aux
-            print("Posición de la cámara:", camera.pos)
+            #print("Posición de la cámara:", camera.pos)
         elif (camera.pos[2] < 0):
             aux = camera.rot
             camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]+0.25)))
             camera.rot = aux
-            print("Posición de la cámara:", camera.pos)
-        elif (camera.pos[0] > 10):
+            #print("Posición de la cámara:", camera.pos)
+        elif (camera.pos[0] > 5):
             aux = camera.rot
             camera = Camera(((camera.pos[0]-0.25), camera.pos[1], camera.pos[2]))
             camera.rot = aux
-            print("Posición de la cámara:", camera.pos)
-        elif (camera.pos[2] > 10):
+            #print("Posición de la cámara:", camera.pos)
+        elif (camera.pos[2] > 9):
             aux = camera.rot
             camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]-0.25)))
             camera.rot = aux
-            print("Posición de la cámara:", camera.pos)
+            #print("Posición de la cámara:", camera.pos)
         #print("Posición de la cámara:", camera.pos[0])
         #print("Posición de la cámara:", camera.pos[1])
         #print("Posición de la cámara:", camera.pos[2])
