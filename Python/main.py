@@ -1,90 +1,201 @@
-import pygame as pg
-import moderngl as mgl
+import pygame
+from pygame.locals import *
 import sys
-from models import Cube
-from camera import Camera
-from music_manager import music_manager
 import subprocess
+from music_manager import music_manager
+from OpenGL.GL import *
+from OpenGL.GLU import *
+import math
+from camera import Camera
+from movimientos import handle_events, handle_mouse
 
 music_manager.start_music()
 
+def close_window_and_run_script(script_path):
+    """Cierra la ventana y ejecuta el script especificado."""
+    pygame.quit()
+    try:
+        subprocess.run([sys.executable, script_path], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error running {script_path}: {e}")
+    sys.exit()
+
+def load_texture(path):
+    texture_surface = pygame.image.load(path)
+    texture_data = pygame.image.tostring(texture_surface, "RGBA", 1)
+    width = texture_surface.get_width()
+    height = texture_surface.get_height()
+
+    glEnable(GL_TEXTURE_2D)
+    texture = glGenTextures(1)
+    glBindTexture(GL_TEXTURE_2D, texture)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+
+    return texture
+
+def draw_axes(length):
+    glBegin(GL_LINES)
+    
+    # Eje X - Rojo
+    glColor3f(1.0, 0.0, 0.0)
+    glVertex3f(0.0, 0.0, 0.0)
+    glVertex3f(length, 0.0, 0.0)
+
+    # Eje Y - Verde
+    glColor3f(0.0, 1.0, 0.0)
+    glVertex3f(0.0, 0.0, 0.0)
+    glVertex3f(0.0, length, 0.0)
+
+    # Eje Z - Azul
+    glColor3f(0.0, 0.0, 1.0)
+    glVertex3f(0.0, 0.0, 0.0)
+    glVertex3f(0.0, 0.0, length)
+
+    glEnd()
+
+def pared(x, y, z, lA, lB, lC):
+    return [
+        #x  y  z
+        ((x+lA), y, z), ((x+lA), (y+lC), z), (x, (y+lC), (z+lB)), (x, y, (z+lB)),
+    ]
 
 
-class Game:
-    def __init__(self, win_size=(1000, 700)):
-        #init pygames modules
-        pg.init()
-        #windows size
-        self.WIN_SIZE = win_size
-        #set opengl attr
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MAJOR_VERSION, 3)
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_MINOR_VERSION, 3)
-        pg.display.gl_set_attribute(pg.GL_CONTEXT_PROFILE_MASK, pg.GL_CONTEXT_PROFILE_CORE)
-        #create opengl context
-        pg.display.set_mode(self.WIN_SIZE, flags=pg.OPENGL | pg.DOUBLEBUF)
-        #detect and use existing opengl context
-        self.ctx = mgl.create_context()
-        #create an object to help track time
-        self.clock = pg.time.Clock()
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
+    pygame.display.set_caption("Cuidado con el cadejo")
+    #display = (800, 600)
+    #pygame.display.set_mode(screen, DOUBLEBUF | OPENGL)
+    #gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+    #glTranslatef(0.0, 0.0, -5)
 
-        # Camera
-        self.camera = Camera(
-            position=(10.0, 10.0, 10.0),
-            target=(0.0, 0.0, 0.0),
-            up=(0.0, 1.0, 0.0),
-            win_size=self.WIN_SIZE
-        )
+    glMatrixMode(GL_PROJECTION)
+    gluPerspective(45, (800 / 600), 0.1, 50.0)
+    glMatrixMode(GL_MODELVIEW)
 
-        # Multiplicate the cube
-        self.cubes = []
-        num_cubes_x = 10
-        num_cubes_z = 8
-        cube_spacing = 1
+    camera = Camera((0.25, 0.25, 0.25))
+    camera.rot = [135.0, 0.0]
+    pos_enemigo = [9.25, 0.25, 9.25]
+    c = 0
 
-        for i in range(num_cubes_x):
-            for j in range(num_cubes_z):
-                x = i * cube_spacing
-                z = j * cube_spacing
-                self.cubes.append(Cube(self, position=(x, 0, z)))
+    superficie = load_texture('Python/Modelos/Texturas/cesped_copy.png')
+    cerca = load_texture('Python/Modelos/pictures/cerca2.jpg')
+    cadejo = load_texture('Python/Modelos/pictures/cadejo1.jpg')
+    #texture = load_texture('Modelos/Texturas/Madera.png')
 
-        # Set projection and view matrix in each cube's shader
-        for cube in self.cubes:
-            cube.shader_program['projection'].write(self.camera.projection.astype('f4'))
-            cube.shader_program['view'].write(self.camera.view.astype('f4'))
+    #Cargar objeto 3D
+    #obj = OBJ('Modelos/obj/HotDog/hotdog.obj')
+    lC = 1
 
-    def check_events(self):
-        for event in pg.event.get():
-            if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-                for cube in self.cubes:
-                    self.quit_game()
+    lA, lB = 10, 0
+    paredA = pared(0,0,0,lA,lB,lC)
+    lA, lB = 0, 10
+    paredB = pared(0,0,0,lA,lB,lC)
+    lA, lB = 10, 0
+    paredC = pared(0,0,10,lA,lB,lC)
+    lA, lB = 0, 10
+    paredD = pared(10,0,0,lA,lB,lC)
+    piso = [
+        #x  y  z
+        (10, 0, 0), (0, 0, 0), (0, 0, 10), (10, 0, 10),
+    ]
+    gen = paredA+paredB+paredC+paredD
 
-    def quit_game(self):
-        # stop the music
-        music_manager.stop_music()
-        # close the game window
-        pg.quit()
-        # Run the main menu script
-        subprocess.run([sys.executable, "Python/menu.py"], check=True)
-        sys.exit()
+    tex_coords = (
+        (1, 1), (1, 0), (0, 0), (0, 1),
+    )
 
-    def render(self):
-        #clear framebuffer
-        self.ctx.clear(color=(0.08, 0.16, 0.18))
-        #render each cube
-        for cube in self.cubes:
-            cube.shader_program['view'].write(self.camera.view.astype('f4'))
-            cube.render()
-        #swap buffers
-        pg.display.flip()
+    clock = pygame.time.Clock()
+    running = True
 
-    def run(self):
-        while True:
-            keys = pg.key.get_pressed()
-            self.camera.update(self.clock.get_time() / 1000.0, keys)
-            self.check_events()
-            self.render()
-            self.clock.tick(60)
+    pygame.mouse.set_pos(screen.get_width() // 2, screen.get_height() // 2)  # Centrar el cursor al inicio
+    pygame.mouse.set_visible(False)  # Ocultar el cursor
 
-if __name__ == '__main__':
-    app = Game()
-    app.run()
+    #print(vertices)
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    close_window_and_run_script("Python/menu.py")
+            handle_mouse(camera, event)
+
+        handle_events(camera)
+        pygame.mouse.set_pos(screen.get_width() // 2, screen.get_height() // 2)
+
+        # Obtener la posición del cursor
+        mouse_dx, mouse_dy = pygame.mouse.get_rel()
+        camera.rotate(mouse_dx * 0.2, mouse_dy * 0.2)
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glBindTexture(GL_TEXTURE_2D, cerca)
+
+        camera.update()
+
+        
+        #pos_enemigo, c = it_follows_you(camera.pos, pos_enemigo, 25, c)
+
+        # Dibujar ejes
+        #draw_axes(2.0)
+
+        glBegin(GL_QUADS)
+        for i in range(0, len(gen), 4):
+            for j in range(4):
+                glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
+                glVertex3fv(gen[i + j])
+        glEnd()
+
+        #glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glBindTexture(GL_TEXTURE_2D, superficie)
+
+        glBegin(GL_QUADS)
+        for i in range(0, len(piso), 4):
+            for j in range(4):
+                glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
+                glVertex3fv(piso[i + j])
+        glEnd()
+
+        # Renderizar el modelo
+        #obj.render()
+
+        posicion = [0,0,3]
+
+        if (camera.pos[0] < 0):
+            aux = camera.rot
+            camera = Camera(((camera.pos[0] + 0.25), camera.pos[1], camera.pos[2]))
+            camera.rot = aux
+            print("Posición de la cámara:", camera.pos)
+        elif (camera.pos[2] < 0):
+            aux = camera.rot
+            camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]+0.25)))
+            camera.rot = aux
+            print("Posición de la cámara:", camera.pos)
+        elif (camera.pos[0] > 10):
+            aux = camera.rot
+            camera = Camera(((camera.pos[0]-0.25), camera.pos[1], camera.pos[2]))
+            camera.rot = aux
+            print("Posición de la cámara:", camera.pos)
+        elif (camera.pos[2] > 10):
+            aux = camera.rot
+            camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]-0.25)))
+            camera.rot = aux
+            print("Posición de la cámara:", camera.pos)
+        #print("Posición de la cámara:", camera.pos[0])
+        #print("Posición de la cámara:", camera.pos[1])
+        #print("Posición de la cámara:", camera.pos[2])
+        #print(camera.rot)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.mouse.set_visible(True)  # Mostrar el cursor al salir
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
