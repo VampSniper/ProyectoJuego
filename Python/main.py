@@ -63,6 +63,17 @@ def pared(x, y, z, lA, lB, lC):
         ((x+lA), y, z), ((x+lA), (y+lC), z), (x, (y+lC), (z+lB)), (x, y, (z+lB)),
     ]
 
+def labBin(archivo):
+    with open(archivo, 'r') as file:
+        lineas = file.readlines()
+        a = [[0 for _ in range(19)] for _ in range(11)]
+        for i in range(0, 11, 1):
+            if i < len(lineas):
+                b = ''.join(lineas[i][j] for j in range(1, 57, 3))  # Saltear columnas de por medio
+
+                for j in range(min(19, len(b))):
+                    a[i][j] = b[j]
+    return a
 
 def main():
     pygame.init()
@@ -71,11 +82,6 @@ def main():
     
     glEnable(GL_DEPTH_TEST)
     glDepthFunc(GL_LESS)
-    
-    #display = (800, 600)
-    #pygame.display.set_mode(screen, DOUBLEBUF | OPENGL)
-    #gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-    #glTranslatef(0.0, 0.0, -5)
 
     glMatrixMode(GL_PROJECTION)
     gluPerspective(45, (800 / 600), 0.1, 50.0)
@@ -83,8 +89,14 @@ def main():
 
     camera = Camera((0.25, 0.25, 0.25))
     camera.rot = [135.0, 0.0]
-    pos_enemigo = [9.25, 0.25, 9.25]
+    pos_enemigo = [4.25, 0.25, 8.25]
+    cam = [0, 0]
+    posCam = [0.25,0.25]
     c = 0
+    anchoAA = [10,8,6,4,2,0]
+    largoAA = [1,3,5,7,9,11,13,15,17]
+    anchoAB = [9,7,5,3,1]
+    largoBB = [0,2,4,6,8,10,12,14,16,18]
 
     superficie = load_texture('Python/Modelos/Texturas/cesped_copy.png')
     cerca = load_texture('Python/Modelos/pictures/cerca2.jpg')
@@ -151,7 +163,11 @@ def main():
     pygame.mouse.set_visible(False)  # Ocultar el cursor
 
     #print(vertices)
-
+    
+    #0 = no hay nada, 1 = hay una pared, 2 = ubicacion del jugador, 3 = ubicacion del enemigo
+    #Todo comienza al inicio con 0 y 1 = Binario del laberinto
+    archivo = 'Python/labBin.txt'
+    atravesar = labBin(archivo)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -169,15 +185,13 @@ def main():
         camera.rotate(mouse_dx * 0.2, mouse_dy * 0.2)
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glBindTexture(GL_TEXTURE_2D, cerca)
 
         camera.update()
 
-        
-        #pos_enemigo, c = it_follows_you(camera.pos, pos_enemigo, 25, c)
-
         # Dibujar ejes
-        #draw_axes(2.0)
+        #draw_axes(15.0)
+
+        glBindTexture(GL_TEXTURE_2D, cerca)
 
         glBegin(GL_QUADS)
         for i in range(0, len(gen), 4):
@@ -210,30 +224,140 @@ def main():
 
         posicion = [0,0,3]
 
-        if (camera.pos[0] < 0):
-            aux = camera.rot
-            camera = Camera(((camera.pos[0] + 0.25), camera.pos[1], camera.pos[2]))
-            camera.rot = aux
-            #print("Posición de la cámara:", camera.pos)
-        elif (camera.pos[2] < 0):
-            aux = camera.rot
-            camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]+0.25)))
-            camera.rot = aux
-            #print("Posición de la cámara:", camera.pos)
-        elif (camera.pos[0] > 5):
-            aux = camera.rot
-            camera = Camera(((camera.pos[0]-0.25), camera.pos[1], camera.pos[2]))
-            camera.rot = aux
-            #print("Posición de la cámara:", camera.pos)
-        elif (camera.pos[2] > 9):
-            aux = camera.rot
-            camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]-0.25)))
-            camera.rot = aux
-            #print("Posición de la cámara:", camera.pos)
-        #print("Posición de la cámara:", camera.pos[0])
-        #print("Posición de la cámara:", camera.pos[1])
-        #print("Posición de la cámara:", camera.pos[2])
-        #print(camera.rot)
+        if (round(camera.pos[0]) - camera.pos[0]) > 0: #Esta en la parte arriba del bloque
+            if (round(camera.pos[2]) - camera.pos[2]) > 0: #Esta del lado izquierdo del bloque
+                if (round(camera.pos[2])-1) != cam[1]:
+                    if ((round(camera.pos[2]) - 1) - cam[1]) < 0:
+                        print("Cambio hacia la izquierda arriba")
+                        #print(f"{(anchoAB[round(camera.pos[0]) - 1])} - {(largoBB[round(camera.pos[2])])}")
+                        print((atravesar[(anchoAB[round(camera.pos[0]) - 1])][(largoBB[round(camera.pos[2])])]))
+                        if ((atravesar[(anchoAB[round(camera.pos[0]) - 1])][(largoBB[round(camera.pos[2])])]) == "0"):
+                            print("pasa")
+                            cam[1] = round(camera.pos[2]) - 1
+                        else:
+                            print("no pasa")
+                            camera.pos[0] = posCam[0]
+                            camera.pos[2] = posCam[1]
+                if (round(camera.pos[0]) - 1) != cam[0]:
+                    if ((round(camera.pos[0]) - 1) - cam[0]) < 0:
+                        print("Cambio hacia abajo (CAD)")
+                        #print(atravesar[(anchoAA[(round(camera.pos[0]))])][(largoAA[round(camera.pos[2]) - 1])])
+                        if((atravesar[(anchoAA[(round(camera.pos[0]))])][(largoAA[round(camera.pos[2]) - 1])]) == "0"):
+                            print("pasa")
+                            cam[0] = round(camera.pos[0]) - 1
+                        else:
+                            print("no pasa")
+                            camera.pos[0] = posCam[0]
+                            camera.pos[2] = posCam[1]
+            else: #Esta del lado derecho
+                if (round(camera.pos[2])) != cam[1]:
+                    if ((round(camera.pos[2])) - cam[1]) > 0:
+                        print("Cambio hacia la derecha arriba")
+                        #print(f"{(anchoAB[round(camera.pos[0]) - 1])} - {(largoBB[round(camera.pos[2])])}")
+                        print((atravesar[(anchoAB[round(camera.pos[0]) - 1])][(largoBB[round(camera.pos[2])])]))
+                        if ((atravesar[(anchoAB[round(camera.pos[0]) - 1])][(largoBB[round(camera.pos[2])])]) == "0"):
+                            print("pasa")
+                            cam[1] = round(camera.pos[2])
+                            #print(f"{cam[1]} - {round(camera.pos[2]) - 1}")
+                        else:
+                            print("no pasa")
+                            camera.pos[0] = posCam[0]
+                            camera.pos[2] = posCam[1]
+                if (round(camera.pos[0]) - 1) != cam[0]:
+                    if ((round(camera.pos[0]) - 1) - cam[0]) < 0:
+                        print("Cambio hacia abajo (CAI)")
+                        #print(atravesar[(anchoAA[(round(camera.pos[0]))])][(largoAA[round(camera.pos[2])])])
+                        if((atravesar[(anchoAA[(round(camera.pos[0]))])][(largoAA[round(camera.pos[2])])]) == "0"):
+                            print("pasa")
+                            print(f"A: {cam[0]} - {cam[1]}")
+                            cam[0] = round(camera.pos[0]) - 1
+                            #cam[1] = round(camera.pos[2]) - 1
+                            print(f"B: {cam[0]} - {cam[1]}")
+                        else:
+                            print("no pasa")
+                            camera.pos[0] = posCam[0]
+                            camera.pos[2] = posCam[1]
+        else: #Esta en la parte abajo del bloque
+            #print(round(camera.pos[2]) - camera.pos[2])
+            if (round(camera.pos[2]) - camera.pos[2]) > 0: #Esta del lado derecho del bloque
+                if (round(camera.pos[2])-1) != cam[1]:
+                    if ((round(camera.pos[2])-1) - cam[1]) < 0:
+                        print("Cambio hacia la izquierda abajo")
+                        #print(f"{(anchoAB[round(camera.pos[0]) - 1])} - {(largoBB[round(camera.pos[2])])}")
+                        print((atravesar[(anchoAB[round(camera.pos[0])])][(largoBB[round(camera.pos[2])])]))
+                        if ((atravesar[(anchoAB[round(camera.pos[0])])][(largoBB[round(camera.pos[2])])]) == "0"):
+                            print("pasa")
+                            cam[1] = round(camera.pos[2]) - 1
+                        else:
+                            print("no pasa")
+                            camera.pos[0] = posCam[0]
+                            camera.pos[2] = posCam[1]
+                if (round(camera.pos[0])) != cam[0]:
+                    if ((round(camera.pos[0])) - cam[0]) > 0:
+                        print("Cambio hacia arriba (CAD)")
+                        #print(atravesar[(anchoAA[(round(camera.pos[0]))])][(largoAA[round(camera.pos[2])-1])])
+                        if (atravesar[(anchoAA[(round(camera.pos[0]))])][(largoAA[round(camera.pos[2])-1])] == "0"):
+                            print("pasa")
+                            #print(f"A: {cam[0]} - {cam[1]}")
+                            cam[0] = round(camera.pos[0])
+                            #cam[1] = round(camera.pos[2])
+                            #print(f"B: {cam[0]} - {cam[1]}")
+                        else:
+                            print("no pasa")
+                            camera.pos[0] = posCam[0]
+                            camera.pos[2] = posCam[1]
+            else:
+                if (round(camera.pos[2])) != cam[1]:
+                    if ((round(camera.pos[2])) - cam[1]) > 0:
+                        print("Cambio hacia la derecha abajo")
+                        #print(f"{(anchoAB[round(camera.pos[0]) - 1])} - {(largoBB[round(camera.pos[2])])}")
+                        print((atravesar[(anchoAB[round(camera.pos[0])])][(largoBB[round(camera.pos[2])])]))
+                        if ((atravesar[(anchoAB[round(camera.pos[0])])][(largoBB[round(camera.pos[2])])]) == "0"):
+                            print("pasa")
+                            cam[1] = round(camera.pos[2])
+                        else:
+                            print("no pasa")
+                            camera.pos[0] = posCam[0]
+                            camera.pos[2] = posCam[1]
+                if (round(camera.pos[0])) != cam[0]:
+                    if ((round(camera.pos[0])) - cam[0]) > 0:
+                        print("Cambio hacia arriba (CAI)")
+                        #print(atravesar[(anchoAA[(round(camera.pos[0]))])][(largoAA[round(camera.pos[2])])])
+                        if (atravesar[(anchoAA[(round(camera.pos[0]))])][(largoAA[round(camera.pos[2])])] == "0"):
+                            print("pasa")
+                            #print(f"A: {cam[0]} - {cam[1]}")
+                            cam[0] = round(camera.pos[0])
+                            #cam[1] = round(camera.pos[2])
+                            #print(f"B: {cam[0]} - {cam[1]}")
+                        else:
+                            print("no pasa")
+                            camera.pos[0] = posCam[0]
+                            camera.pos[2] = posCam[1]
+
+        #print(cam)
+
+        posCam[0] = camera.pos[0]
+        posCam[1] = camera.pos[2]
+
+        #if (camera.pos[0] < 0):
+        #    aux = camera.rot
+        #    camera = Camera(((camera.pos[0] + 0.25), camera.pos[1], camera.pos[2]))
+        #    camera.rot = aux
+        #    #print("Posición de la cámara:", camera.pos)
+        #elif (camera.pos[2] < 0):
+        #    aux = camera.rot
+        #    camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]+0.25)))
+        #    camera.rot = aux
+        #    #print("Posición de la cámara:", camera.pos)
+        #elif (camera.pos[0] > 5):
+        #    aux = camera.rot
+        #    camera = Camera(((camera.pos[0]-0.25), camera.pos[1], camera.pos[2]))
+        #    camera.rot = aux
+        #    #print("Posición de la cámara:", camera.pos)
+        #elif (camera.pos[2] > 9):
+        #    aux = camera.rot
+        #    camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]-0.25)))
+        #    camera.rot = aux
 
         pygame.display.flip()
         clock.tick(60)
