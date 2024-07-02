@@ -339,25 +339,25 @@ def main():
         posCam[0] = camera.pos[0]
         posCam[1] = camera.pos[2]
 
-        #if (camera.pos[0] < 0):
-        #    aux = camera.rot
-        #    camera = Camera(((camera.pos[0] + 0.25), camera.pos[1], camera.pos[2]))
-        #    camera.rot = aux
-        #    #print("Posición de la cámara:", camera.pos)
-        #elif (camera.pos[2] < 0):
-        #    aux = camera.rot
-        #    camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]+0.25)))
-        #    camera.rot = aux
-        #    #print("Posición de la cámara:", camera.pos)
-        #elif (camera.pos[0] > 5):
-        #    aux = camera.rot
-        #    camera = Camera(((camera.pos[0]-0.25), camera.pos[1], camera.pos[2]))
-        #    camera.rot = aux
-        #    #print("Posición de la cámara:", camera.pos)
-        #elif (camera.pos[2] > 9):
-        #    aux = camera.rot
-        #    camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]-0.25)))
-        #    camera.rot = aux
+        if (camera.pos[0] < 0):
+            aux = camera.rot
+            camera = Camera(((camera.pos[0] + 0.25), camera.pos[1], camera.pos[2]))
+            camera.rot = aux
+            #print("Posición de la cámara:", camera.pos)
+        elif (camera.pos[2] < 0):
+            aux = camera.rot
+            camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]+0.25)))
+            camera.rot = aux
+            #print("Posición de la cámara:", camera.pos)
+        elif (camera.pos[0] > 5):
+            aux = camera.rot
+            camera = Camera(((camera.pos[0]-0.25), camera.pos[1], camera.pos[2]))
+            camera.rot = aux
+            #print("Posición de la cámara:", camera.pos)
+        elif (camera.pos[2] > 9):
+            aux = camera.rot
+            camera = Camera((camera.pos[0], camera.pos[1], (camera.pos[2]-0.25)))
+            camera.rot = aux
 
         pygame.display.flip()
         clock.tick(60)
