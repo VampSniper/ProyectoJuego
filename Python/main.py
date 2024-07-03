@@ -37,6 +37,134 @@ def load_texture(path):
 
     return texture
 
+
+def it_follows_you(pos_jugador, pos_enemigo, v, c):
+    #print(f"E: {pos_enemigo[0]} - J: {pos_jugador[0]} - DX: {pos_enemigo[0] - pos_jugador[0]}")
+    if c <= v:
+        c+=1
+        #print (c)
+    else:
+        c = 0
+        if (pos_enemigo[0] - pos_jugador[0]) > 0:
+            if (pos_enemigo[2] - pos_jugador[2]) > 0:
+                if(pos_enemigo[0] - pos_jugador[0] < 0.25) and (pos_enemigo[2] - pos_jugador[2] < 0.25):
+                    #print("atrapado")
+                    pos_enemigo = pos_jugador
+                else:
+                    if pos_enemigo[0] - pos_jugador[0] < 0.25:
+                        pos_enemigo[0] = pos_jugador[0]
+                        pos_enemigo[2] -= 0.25
+                    elif pos_enemigo[2] - pos_jugador[2] < 0.25:
+                        pos_enemigo[2] = pos_jugador[2]
+                        pos_enemigo[0] -= 0.25
+                    else:
+                        pos_enemigo[0] -= 0.25
+                        pos_enemigo[2] -= 0.25
+                #print(f" + + E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
+            elif (pos_enemigo[2] - pos_jugador[2]) < 0:
+                if(pos_enemigo[0] - pos_jugador[0] < 0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
+                    #print("atrapado")
+                    pos_enemigo = pos_jugador
+                else:
+                    if pos_enemigo[0] - pos_jugador[0] < 0.25:
+                        pos_enemigo[0] = pos_jugador[0]
+                        pos_enemigo[2] += 0.25
+                    elif pos_enemigo[2] - pos_jugador[2] > -0.25:
+                        pos_enemigo[2] = pos_jugador[2]
+                        pos_enemigo[0] -= 0.25
+                    else:
+                        pos_enemigo[0] -= 0.25
+                        pos_enemigo[2] += 0.25
+                #print(f" + - E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
+            else:
+                if(pos_enemigo[0] - pos_jugador[0] < 0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
+                    #print("atrapado")
+                    pos_enemigo = pos_jugador
+                else:
+                    if pos_enemigo[0] - pos_jugador[0] < 0.25:
+                        pos_enemigo[0] = pos_jugador[0]
+                    else:
+                        pos_enemigo[0] -= 0.25
+                #print(f" + N/A E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
+        elif (pos_enemigo[0] - pos_jugador[0]) < 0:
+            if (pos_enemigo[2] - pos_jugador[2]) > 0:
+                if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] < 0.25):
+                    #print("atrapado")
+                    pos_enemigo = pos_jugador
+                else:
+                    if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        pos_enemigo[0] = pos_jugador[0]
+                        pos_enemigo[2] -= 0.25
+                    elif pos_enemigo[2] - pos_jugador[2] < 0.25:
+                        pos_enemigo[2] = pos_jugador[2]
+                        pos_enemigo[0] += 0.25
+                    else:
+                        pos_enemigo[0] += 0.25
+                        pos_enemigo[2] -= 0.25
+                #print(f" - + E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
+            elif (pos_enemigo[2] - pos_jugador[2]) < 0:
+                if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
+                    #print("atrapado")
+                    pos_enemigo = pos_jugador
+                else:
+                    if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        pos_enemigo[0] = pos_jugador[0]
+                        pos_enemigo[2] += 0.25
+                    elif pos_enemigo[2] - pos_jugador[2] > -0.25:
+                        pos_enemigo[2] = pos_jugador[2]
+                        pos_enemigo[0] += 0.25
+                    else:
+                        pos_enemigo[0] += 0.25
+                        pos_enemigo[2] += 0.25
+                #print(f" - - E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
+            else:
+                if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
+                    #print("atrapado")
+                    pos_enemigo = pos_jugador
+                else:
+                    if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        pos_enemigo[0] = pos_jugador[0]
+                    else:
+                        pos_enemigo[0] += 0.25
+                #print(f" - - E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
+        else:
+            if (pos_enemigo[2] - pos_jugador[2]) > 0:
+                if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] < 0.25):
+                    #print("atrapado")
+                    pos_enemigo = pos_jugador
+                else:
+                    if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        pos_enemigo[0] = pos_jugador[0]
+                        pos_enemigo[2] -= 0.25
+                    elif pos_enemigo[2] - pos_jugador[2] < 0.25:
+                        pos_enemigo[2] = pos_jugador[2]
+                        pos_enemigo[0] += 0.25
+                    else:
+                        pos_enemigo[0] += 0.25
+                        pos_enemigo[2] -= 0.25
+                #print(f" - + E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
+            elif (pos_enemigo[2] - pos_jugador[2]) < 0:
+                if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
+                    #print("atrapado")
+                    pos_enemigo = pos_jugador
+                else:
+                    if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        pos_enemigo[0] = pos_jugador[0]
+                        pos_enemigo[2] += 0.25
+                    elif pos_enemigo[2] - pos_jugador[2] > -0.25:
+                        pos_enemigo[2] = pos_jugador[2]
+                        pos_enemigo[0] += 0.25
+                    else:
+                        pos_enemigo[0] += 0.25
+                        pos_enemigo[2] += 0.25
+                #print(f" - - E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
+            else:
+                #print("atrapado")
+                pos_enemigo = pos_jugador
+    return pos_enemigo, c
+
+
+
 def draw_axes(length):
     glBegin(GL_LINES)
     
@@ -187,6 +315,19 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         camera.update()
+
+        pos_enemigo, c = it_follows_you(camera.pos, pos_enemigo, 50, c)
+        enemigo = pared(pos_enemigo[0],0.25,pos_enemigo[2],1,0.25,1)
+    
+        glBindTexture(GL_TEXTURE_2D, cadejo)
+        
+        glBegin(GL_QUADS)
+        for i in range(0, len(enemigo), 4):
+            for j in range(4):
+                glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
+                glVertex3fv(enemigo[i + j])
+        glEnd()
+
 
         # Dibujar ejes
         #draw_axes(15.0)
