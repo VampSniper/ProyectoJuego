@@ -258,6 +258,7 @@ def main():
 
     superficie = load_texture('Python/Modelos/pictures/skybox_bosque_abajo.jpg')
     cerca = load_texture('Python/Modelos/pictures/skybox_bosque_atras.jpg')
+    victory = load_texture('Python/Modelos/pictures/victoria1.jpg')
     #cadejo = load_texture('Python/Modelos/pictures/cadejo1.jpg')
     #texture = load_texture('Modelos/Texturas/Madera.png')
 
@@ -270,15 +271,21 @@ def main():
     paredA = pared(0,0,0,lA,lB,lC)
     lA, lB = 0, 9
     paredB = pared(0,0,0,lA,lB,lC)
-    lA, lB = 5, 0
+    lA, lB = 2, 0
     paredC = pared(0,0,9,lA,lB,lC)
     lA, lB = 0, 9
     paredD = pared(5,0,0,lA,lB,lC)
+    lA, lB = 2, 0
+    paredE = pared(3,0,9,lA,lB,lC)
+
+    lA, lB = 1, 0
+    paredV = pared(2,0,9,lA,lB,lC)
+
     piso = [
         #x  y  z
         (5, 0, 0), (0, 0, 0), (0, 0, 9), (5, 0, 9),
     ]
-    gen = paredA+paredB+paredC+paredD
+    gen = paredA+paredB+paredC+paredD+paredE
 
     lC = 1
     lab0 = pared(1,0,1,1,0,lC)
@@ -388,10 +395,23 @@ def main():
                 glVertex3fv(laberinto[i + j])
         glEnd()
 
+        glBindTexture(GL_TEXTURE_2D, victory)
+
+        glBegin(GL_QUADS)
+        for i in range(0, len(paredV), 4):
+            for j in range(4):
+                glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
+                glVertex3fv(paredV[i + j])
+        glEnd()
+
         # Renderizar el modelo
         #obj.render()
 
         posicion = [0,0,3]
+
+        if (camera.pos[0] > 2 and camera.pos[0] < 3) and (camera.pos[2] > 9):
+            #print("victory")
+            close_window_and_run_script("Python/victory.py")
 
         if (round(camera.pos[0]) - camera.pos[0]) > 0: #Esta en la parte arriba del bloque
             if (round(camera.pos[2]) - camera.pos[2]) > 0: #Esta del lado izquierdo del bloque
