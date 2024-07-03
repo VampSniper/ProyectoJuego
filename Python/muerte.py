@@ -1,0 +1,1 @@
+print("El gobierno gobierna, con su pierna, hay leche y sal")

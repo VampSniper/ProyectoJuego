@@ -8,6 +8,7 @@ from OpenGL.GLU import *
 import math
 from camera import Camera
 from movimientos import handle_events, handle_mouse
+from cargarOBJ import OBJ
 
 music_manager.start_music()
 
@@ -37,8 +38,8 @@ def load_texture(path):
 
     return texture
 
-
-def it_follows_you(pos_jugador, pos_enemigo, v, c):
+def it_follows_you(pos_jugador, pos_enemigo, v, c, obj):
+    pos_enemigo = list(pos_enemigo)
     #print(f"E: {pos_enemigo[0]} - J: {pos_jugador[0]} - DX: {pos_enemigo[0] - pos_jugador[0]}")
     if c <= v:
         c+=1
@@ -49,77 +50,97 @@ def it_follows_you(pos_jugador, pos_enemigo, v, c):
             if (pos_enemigo[2] - pos_jugador[2]) > 0:
                 if(pos_enemigo[0] - pos_jugador[0] < 0.25) and (pos_enemigo[2] - pos_jugador[2] < 0.25):
                     #print("atrapado")
+                    close_window_and_run_script("Python/muerte.py")
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] < 0.25:
+                        obj.set_rotation((0, 180, 0))
                         pos_enemigo[0] = pos_jugador[0]
                         pos_enemigo[2] -= 0.25
                     elif pos_enemigo[2] - pos_jugador[2] < 0.25:
+                        obj.set_rotation((0, 270, 0))
                         pos_enemigo[2] = pos_jugador[2]
                         pos_enemigo[0] -= 0.25
                     else:
+                        obj.set_rotation((0, 225, 0))
                         pos_enemigo[0] -= 0.25
                         pos_enemigo[2] -= 0.25
                 #print(f" + + E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
             elif (pos_enemigo[2] - pos_jugador[2]) < 0:
                 if(pos_enemigo[0] - pos_jugador[0] < 0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
                     #print("atrapado")
+                    close_window_and_run_script("Python/muerte.py")
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] < 0.25:
+                        obj.set_rotation((0, 360, 0))
                         pos_enemigo[0] = pos_jugador[0]
                         pos_enemigo[2] += 0.25
                     elif pos_enemigo[2] - pos_jugador[2] > -0.25:
+                        obj.set_rotation((0, 270, 0))
                         pos_enemigo[2] = pos_jugador[2]
                         pos_enemigo[0] -= 0.25
                     else:
+                        obj.set_rotation((0, 315, 0))
                         pos_enemigo[0] -= 0.25
                         pos_enemigo[2] += 0.25
                 #print(f" + - E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
             else:
                 if(pos_enemigo[0] - pos_jugador[0] < 0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
                     #print("atrapado")
+                    close_window_and_run_script("Python/muerte.py")
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] < 0.25:
+                        print("XD1")
                         pos_enemigo[0] = pos_jugador[0]
                     else:
+                        print("XD2")
                         pos_enemigo[0] -= 0.25
                 #print(f" + N/A E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
         elif (pos_enemigo[0] - pos_jugador[0]) < 0:
             if (pos_enemigo[2] - pos_jugador[2]) > 0:
                 if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] < 0.25):
                     #print("atrapado")
+                    close_window_and_run_script("Python/muerte.py")
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        obj.set_rotation((0, 180, 0))
                         pos_enemigo[0] = pos_jugador[0]
                         pos_enemigo[2] -= 0.25
                     elif pos_enemigo[2] - pos_jugador[2] < 0.25:
+                        obj.set_rotation((0, 90, 0))
                         pos_enemigo[2] = pos_jugador[2]
                         pos_enemigo[0] += 0.25
                     else:
+                        obj.set_rotation((0, 135, 0))
                         pos_enemigo[0] += 0.25
                         pos_enemigo[2] -= 0.25
                 #print(f" - + E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
             elif (pos_enemigo[2] - pos_jugador[2]) < 0:
                 if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
                     #print("atrapado")
+                    close_window_and_run_script("Python/muerte.py")
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        obj.set_rotation((0, 0, 0))
                         pos_enemigo[0] = pos_jugador[0]
                         pos_enemigo[2] += 0.25
                     elif pos_enemigo[2] - pos_jugador[2] > -0.25:
+                        obj.set_rotation((0, 90, 0))
                         pos_enemigo[2] = pos_jugador[2]
                         pos_enemigo[0] += 0.25
                     else:
+                        obj.set_rotation((0, 45, 0))
                         pos_enemigo[0] += 0.25
                         pos_enemigo[2] += 0.25
                 #print(f" - - E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
             else:
                 if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
                     #print("atrapado")
+                    close_window_and_run_script("Python/muerte.py")
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] > -0.25:
@@ -131,39 +152,46 @@ def it_follows_you(pos_jugador, pos_enemigo, v, c):
             if (pos_enemigo[2] - pos_jugador[2]) > 0:
                 if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] < 0.25):
                     #print("atrapado")
+                    close_window_and_run_script("Python/muerte.py")
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        obj.set_rotation((0, 180, 0))
                         pos_enemigo[0] = pos_jugador[0]
                         pos_enemigo[2] -= 0.25
                     elif pos_enemigo[2] - pos_jugador[2] < 0.25:
+                        obj.set_rotation((0, 90, 0))
                         pos_enemigo[2] = pos_jugador[2]
                         pos_enemigo[0] += 0.25
                     else:
+                        obj.set_rotation((0, 135, 0))
                         pos_enemigo[0] += 0.25
                         pos_enemigo[2] -= 0.25
                 #print(f" - + E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
             elif (pos_enemigo[2] - pos_jugador[2]) < 0:
                 if(pos_enemigo[0] - pos_jugador[0] > -0.25) and (pos_enemigo[2] - pos_jugador[2] > -0.25):
                     #print("atrapado")
+                    close_window_and_run_script("Python/muerte.py")
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] > -0.25:
+                        obj.set_rotation((0, 360, 0))
                         pos_enemigo[0] = pos_jugador[0]
                         pos_enemigo[2] += 0.25
                     elif pos_enemigo[2] - pos_jugador[2] > -0.25:
+                        obj.set_rotation((0, 90, 0))
                         pos_enemigo[2] = pos_jugador[2]
                         pos_enemigo[0] += 0.25
                     else:
+                        obj.set_rotation((0, 45, 0))
                         pos_enemigo[0] += 0.25
                         pos_enemigo[2] += 0.25
                 #print(f" - - E: {pos_enemigo[0]} , {pos_enemigo[2]} - J: {pos_jugador[0]} , {pos_jugador[2]} - DXY: {pos_enemigo[0] - pos_jugador[0]} , {pos_enemigo[2] - pos_jugador[2]}")
             else:
                 #print("atrapado")
+                close_window_and_run_script("Python/muerte.py")
                 pos_enemigo = pos_jugador
     return pos_enemigo, c
-
-
 
 def draw_axes(length):
     glBegin(GL_LINES)
@@ -214,10 +242,12 @@ def main():
     glMatrixMode(GL_PROJECTION)
     gluPerspective(45, (800 / 600), 0.1, 50.0)
     glMatrixMode(GL_MODELVIEW)
+    glEnable(GL_TEXTURE_2D)
+    glTranslatef(0.0, 0.0, -5)
 
-    camera = Camera((0.25, 0.25, 0.25))
+    camera = Camera((0.25, 0.5, 0.25))
     camera.rot = [135.0, 0.0]
-    pos_enemigo = [4.25, 0.25, 8.25]
+    #pos_enemigo = [4.25, 0.25, 8.25]
     cam = [0, 0]
     posCam = [0.25,0.25]
     c = 0
@@ -228,8 +258,10 @@ def main():
 
     superficie = load_texture('Python/Modelos/pictures/skybox_bosque_abajo.jpg')
     cerca = load_texture('Python/Modelos/pictures/skybox_bosque_atras.jpg')
-    cadejo = load_texture('Python/Modelos/pictures/cadejo1.jpg')
+    #cadejo = load_texture('Python/Modelos/pictures/cadejo1.jpg')
     #texture = load_texture('Modelos/Texturas/Madera.png')
+
+    obj = OBJ("Python/Modelos/obj/source/dog.obj", "Python/Modelos/Texturas/dog.tga.png")
 
     #Cargar objeto 3D
     #obj = OBJ('Modelos/obj/HotDog/hotdog.obj')
@@ -296,6 +328,7 @@ def main():
     #Todo comienza al inicio con 0 y 1 = Binario del laberinto
     archivo = 'Python/labBin.txt'
     atravesar = labBin(archivo)
+    rotation_angle = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -316,18 +349,13 @@ def main():
 
         camera.update()
 
-        pos_enemigo, c = it_follows_you(camera.pos, pos_enemigo, 50, c)
-        enemigo = pared(pos_enemigo[0],0.25,pos_enemigo[2],1,0.25,1)
-    
-        glBindTexture(GL_TEXTURE_2D, cadejo)
-        
-        glBegin(GL_QUADS)
-        for i in range(0, len(enemigo), 4):
-            for j in range(4):
-                glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
-                glVertex3fv(enemigo[i + j])
-        glEnd()
+        obj.render()
 
+        obj.position, c = it_follows_you(camera.pos, obj.position, 15, c, obj)
+
+        # Actualizar la rotación del objeto
+        #rotation_angle += 20
+        #obj.set_rotation((0, rotation_angle, 0))
 
         # Dibujar ejes
         #draw_axes(15.0)
@@ -474,7 +502,7 @@ def main():
                             print("no pasa")
                             camera.pos[0] = posCam[0]
                             camera.pos[2] = posCam[1]
-
+        
         #print(cam)
 
         posCam[0] = camera.pos[0]
