@@ -226,8 +226,8 @@ def main():
     anchoAB = [9,7,5,3,1]
     largoBB = [0,2,4,6,8,10,12,14,16,18]
 
-    superficie = load_texture('Python/pictures/piso.png')
-    cerca = load_texture('Python/Modelos/pictures/cerca2.jpg')
+    superficie = load_texture('Python/Modelos/pictures/skybox_bosque_abajo.jpg')
+    cerca = load_texture('Python/Modelos/pictures/skybox_bosque_atras.jpg')
     cadejo = load_texture('Python/Modelos/pictures/cadejo1.jpg')
     #texture = load_texture('Modelos/Texturas/Madera.png')
 
