@@ -3,30 +3,30 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-# Inicializar Pygame y OpenGL
+# # Initialize Pygame and OpenGL
 pygame.init()
 display = (800, 600)
 pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-glEnable(GL_DEPTH_TEST)
+glEnable(GL_DEPTH_TEST) # Enable depth buffer for 3D rendering
 
-# Configuración de la proyección y la vista
-gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
-glTranslatef(0.0, 0.0, -5)
-glRotatef(0, 0, 0, 0)
+# Projection and view configuration
+gluPerspective(45, (display[0] / display[1]), 0.1, 50.0) # Set up camera perspective
+glTranslatef(0.0, 0.0, -5) # Translate the scene on the z-axis for initial viewing
+glRotatef(0, 0, 0, 0)  # Initial rotation (no rotation)
 
-# Configuración de la luz
-glEnable(GL_LIGHTING)
-glEnable(GL_LIGHT0)
-glLightfv(GL_LIGHT0, GL_POSITION, [5, 5, 5, 1])  # Posición de la luz
-glLightfv(GL_LIGHT0, GL_DIFFUSE, [1, 1, 0, 1])  # Color difuso (blanco)
-glLightfv(GL_LIGHT0, GL_SPECULAR, [1, 0.5, 0, 1])  # Color especular (blanco)
+# Light configuration
+glEnable(GL_LIGHTING)  # Enable lighting
+glEnable(GL_LIGHT0) # Enable light 0
+glLightfv(GL_LIGHT0, GL_POSITION, [5, 5, 5, 1])   # Set light position
+glLightfv(GL_LIGHT0, GL_DIFFUSE, [1, 1, 0, 1])  # Set diffuse color of light (white)
+glLightfv(GL_LIGHT0, GL_SPECULAR, [1, 0.5, 0, 1])  # Set specular color of light (white)
 
-# Materiales
-glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, [1, 0.5, 0, 1])
-glMaterialfv(GL_FRONT, GL_SPECULAR, [1, 1, 1, 1])
-glMaterialf(GL_FRONT, GL_SHININESS, 50)
+# Materials
+glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, [1, 0.5, 0, 1])  # Set ambient and diffuse material
+glMaterialfv(GL_FRONT, GL_SPECULAR, [1, 1, 1, 1])  # Set specular color
+glMaterialf(GL_FRONT, GL_SHININESS, 50) # Set shininess
 
-# Crear un cubo para visualizar la iluminación
+# Create a cube for visualizing lighting
 vertices = (
     (1, -1, -1),
     (1, 1, -1),
@@ -82,7 +82,7 @@ while True:
             pygame.quit()
             quit()
 
-    glRotatef(100, 9, 5, 5)  # Aumenta la velocidad de rotación
+    glRotatef(100, 9, 5, 5)   # Increase rotation speed
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     Cube()
     pygame.display.flip()
