@@ -7,16 +7,32 @@ from PIL import Image
 
 class OBJ:
     def __init__(self, filename, texture_file, position=(0, 0, 0), scale=(1, 1, 1)):
-        self.vertices = []
-        self.tex_coords = []
-        self.faces = []
-        self.position = position
-        self.scale = scale
-        self.texture_id = self.load_texture(texture_file)
-        self.load_model(filename)
-        self.calculate_dimensions()
+        """
+        Initialize an OBJ object.
+
+        Args:
+        - filename: Path to the OBJ model file.
+        - texture_file: Path to the texture file for the model.
+        - position: Initial position of the model in 3D space.
+        - scale: Scaling factors in x, y, and z directions.
+        """
+        self.vertices = [] #List to store vertex coordinates
+        self.tex_coords = [] # List to store texture coordinates
+        self.faces = [] # List to store faces (vertex and texture coordinate indices)
+        self.position = position  # Initial position of the model
+        self.scale = scale # Scaling factors of the model
+        self.texture_id = self.load_texture(texture_file) # Load and store the texture
+        self.load_model(filename) # Load the OBJ model from file
+        self.calculate_dimensions() # Calculate dimensions of the model
 
     def load_model(self, filename):
+        """
+        Load the OBJ model from the specified file.
+
+        Args:
+        - filename: Path to the OBJ model file.
+        """
+        
         with open(filename, 'r') as file:
             for line in file:
                 if line.startswith('v '):
@@ -38,6 +54,9 @@ class OBJ:
                     self.faces.append(face)
 
     def calculate_dimensions(self):
+        """
+        Calculate the dimensions (size) of the model.
+        """
         vertices = np.array(self.vertices)
         self.min_coords = vertices.min(axis=0)
         self.max_coords = vertices.max(axis=0)
@@ -45,6 +64,15 @@ class OBJ:
         print(f"Original size: {self.size}")
 
     def load_texture(self, texture_file):
+        """
+        Load the texture from file and create a texture ID.
+
+        Args:
+        - texture_file: Path to the texture file.
+
+        Returns:
+        - texture_id: ID of the loaded texture.
+        """
         texture_surface = Image.open(texture_file)
         texture_data = texture_surface.tobytes("raw", "RGB", 0, -1)
         width, height = texture_surface.size
@@ -62,6 +90,9 @@ class OBJ:
         return texture_id
 
     def render(self):
+        """
+        Render the OBJ model with applied texture.
+        """
         glPushMatrix()
         glTranslatef(*self.position)
         glScalef(*self.scale)
@@ -77,6 +108,9 @@ class OBJ:
         glPopMatrix()
 
 def main():
+    """
+    Main function to initialize Pygame, set up OpenGL, load an OBJ model, and render it.
+    """
     pygame.init()
     display = (800, 600)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
@@ -86,7 +120,7 @@ def main():
     glEnable(GL_TEXTURE_2D)
     glTranslatef(0.0, 0.0, -5)
     
-    obj = OBJ("Python/Modelos/obj/source/dog.obj", "Python/Modelos/Texturas/dog.tga.png")  # Replace with your OBJ file and texture paths
+    obj = OBJ("Python/Modelos/obj/source/dog.obj", "Python/Modelos/Texturas/dog.tga.png")  #  OBJ file and texture paths
 
     while True:
         for event in pygame.event.get():
