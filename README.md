@@ -14,7 +14,10 @@ maze have walls that you can't pass, you need to surround. The maze atmosphere
 have a moon, which affects the lighting in the maze and de cadejo. The principal 
 character its in first person. Viewers can see the moon using the camera perspective. 
 During the character walk's, the audience can look around using the mouse.
-*Insertar ss del laberinto desde una perspectica que se mire todo*
+
+![image](https://github.com/VampSniper/ProyectoJuego/assets/110701630/6a0fdbcc-16b4-4dc9-92b1-e104628b4355)
+
+
 
 	Getting Started
 -------------------------------------------------------------------------------------
@@ -35,13 +38,14 @@ Which you can configure the volume, if you want to pause it, unpause it or play
 another song.
 When you go back, you return to the previous menu to start the game.
 
-*Insertar ss de menu options*
+![image](https://github.com/VampSniper/ProyectoJuego/assets/110701630/42d6584d-979e-4c00-9313-40c836db8da4)
+
 
 When you press play, the whole game of "runaway!" starts, the keys for these 
 are the normal keyboard ones, that is, "A,W,S,D" which allow you to advance and 
 double, you must reach the goal before May the cadejo catch you, so run!
 
-*Insertar ss del juego*
+
 
 	How it's made
 -------------------------------------------------------------------------------------
