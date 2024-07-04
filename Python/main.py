@@ -1,56 +1,90 @@
 import pygame
-from pygame.locals import *
-import sys
-import subprocess
-from music_manager import music_manager
-from OpenGL.GL import *
-from OpenGL.GLU import *
-import math
-from camera import Camera
-from movimientos import handle_events, handle_mouse
-from cargarOBJ import OBJ
+import random
+from pygame.locals import *  # Import essential Pygame constants and functions
+import sys  # Import system-specific parameters and functions
+import subprocess  # Import subprocess for running external commands
+from music_manager import music_manager  # Import custom music manager
+from OpenGL.GL import *  # Import OpenGL functions
+from OpenGL.GLU import *  # Import OpenGL Utility Library functions
+import math  # Import math for mathematical functions
+from camera import Camera  # Import custom Camera class
+from movimientos import handle_events, handle_mouse  # Import custom event handlers
+from cargarOBJ import OBJ  # Import custom OBJ loader
 
+# Start the music using the custom music manager
 music_manager.start_music()
+
+def load_clouds ():
+    y = 5
+    clouds = list()
+    costados = list()
+    for i in range(0,20,1):
+        coord_x = random.randint(-2, 7)
+        coord_z = random.randint(-2, 11)
+        clouds += [
+            #x  y  z
+            ((coord_x+1), y, coord_z), (coord_x, y, coord_z), (coord_x, y, (coord_z+1)), ((coord_x+1), y, (coord_z+1)),
+        ]
+        clouds += [
+            #x  y  z
+            ((coord_x+1), (y+1), coord_z), (coord_x, (y+1), coord_z), (coord_x, (y+1), (coord_z+1)), ((coord_x+1), (y+1), (coord_z+1)),
+        ]
+        costados += [
+            ((coord_x+1), y, coord_z), (coord_x, y, coord_z), (coord_x, (y+1), coord_z), ((coord_x+1), (y+1), coord_z),
+        ]
+        costados += [
+            ((coord_x+1), y, (coord_z+1)), (coord_x, y, (coord_z+1)), (coord_x, (y+1), (coord_z+1)), ((coord_x+1), (y+1), (coord_z+1)),
+        ]
+        costados += [
+            ((coord_x+1), y, (coord_z+1)), ((coord_x+1), y, coord_z), ((coord_x+1), (y+1), coord_z), ((coord_x+1), (y+1), (coord_z+1)),
+        ]
+        costados += [
+            (coord_x, y, (coord_z+1)), (coord_x, y, coord_z), (coord_x, (y+1), coord_z), (coord_x, (y+1), (coord_z+1)),
+        ]
+    return clouds, costados
 
 def close_window_and_run_script(script_path):
     """Cierra la ventana y ejecuta el script especificado."""
-    pygame.quit()
+    pygame.quit() # Quit Pygame
     try:
-        subprocess.run([sys.executable, script_path], check=True)
+        subprocess.run([sys.executable, script_path], check=True)  # Run the script
     except subprocess.CalledProcessError as e:
-        print(f"Error running {script_path}: {e}")
-    sys.exit()
+        print(f"Error running {script_path}: {e}")  # Print error if script fails
+    sys.exit()  # Exit the program
 
 def load_texture(path):
+     # Load the texture image
     texture_surface = pygame.image.load(path)
     texture_data = pygame.image.tostring(texture_surface, "RGBA", 1)
     width = texture_surface.get_width()
     height = texture_surface.get_height()
+    
+    # Enable 2D texture mapping
 
     glEnable(GL_TEXTURE_2D)
-    texture = glGenTextures(1)
-    glBindTexture(GL_TEXTURE_2D, texture)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+    texture = glGenTextures(1)  # Generate a new texture ID
+    glBindTexture(GL_TEXTURE_2D, texture) # Bind the texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data) # Specify texture
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT) # Set texture wrapping
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) # Set texture filtering
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
-    return texture
+    return texture # Return the texture ID
 
 def it_follows_you(pos_jugador, pos_enemigo, v, c, obj):
-    pos_enemigo = list(pos_enemigo)
+    pos_enemigo = list(pos_enemigo) # Ensure enemy_pos is a list
     #print(f"E: {pos_enemigo[0]} - J: {pos_jugador[0]} - DX: {pos_enemigo[0] - pos_jugador[0]}")
     if c <= v:
-        c+=1
+        c+=1  # Increment the counter
         #print (c)
     else:
-        c = 0
+        c = 0 # Reset the counter
         if (pos_enemigo[0] - pos_jugador[0]) > 0:
             if (pos_enemigo[2] - pos_jugador[2]) > 0:
                 if(pos_enemigo[0] - pos_jugador[0] < 0.25) and (pos_enemigo[2] - pos_jugador[2] < 0.25):
                     #print("atrapado")
-                    close_window_and_run_script("Python/muerte.py")
+                    close_window_and_run_script("Python/muerte.py") #Close and run the death script 
                     pos_enemigo = pos_jugador
                 else:
                     if pos_enemigo[0] - pos_jugador[0] < 0.25:
@@ -327,6 +361,7 @@ def main():
     superficie = load_texture('Python/Modelos/pictures/skybox_bosque_abajo.jpg')
     cerca = load_texture('Python/Modelos/pictures/skybox_bosque_atras.jpg')
     victory = load_texture('Python/Modelos/pictures/victoria1.jpg')
+    tex_clouds = load_texture('Python/Modelos/pictures/victoria1.jpg')
     #cadejo = load_texture('Python/Modelos/pictures/cadejo1.jpg')
     #texture = load_texture('Modelos/Texturas/Madera.png')
 
@@ -391,7 +426,7 @@ def main():
         (1, 1), (1, 0), (0, 0), (0, 1),
     )
 
-    clock = pygame.time.Clock()
+    clock = pygame.time.Clock() 
     running = True
 
     pygame.mouse.set_pos(screen.get_width() // 2, screen.get_height() // 2)  # Centrar el cursor al inicio
@@ -403,6 +438,10 @@ def main():
     #Todo comienza al inicio con 0 y 1 = Binario del laberinto
     archivo = 'Python/labBin.txt'
     atravesar = labBin(archivo)
+    
+    clouds, costados = load_clouds ()
+    #print(clouds)
+    
     rotation_angle = 0
     while running:
         for event in pygame.event.get():
@@ -439,6 +478,7 @@ def main():
 
         # Dibujar ejes
         #draw_axes(15.0)
+        
 
         glBindTexture(GL_TEXTURE_2D, cerca)
 
@@ -475,6 +515,22 @@ def main():
             for j in range(4):
                 glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
                 glVertex3fv(paredV[i + j])
+        glEnd()
+        
+        glBindTexture(GL_TEXTURE_2D, tex_clouds)
+
+        glBegin(GL_QUADS)
+        for i in range(0, len(clouds), 4):
+            for j in range(4):
+                glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
+                glVertex3fv(clouds[i + j])
+        glEnd()
+
+        glBegin(GL_QUADS)
+        for i in range(0, len(costados), 4):
+            for j in range(4):
+                glTexCoord2f(tex_coords[j][0], tex_coords[j][1])
+                glVertex3fv(costados[i + j])
         glEnd()
 
         # Renderizar el modelo
