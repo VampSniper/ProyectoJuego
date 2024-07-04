@@ -231,6 +231,74 @@ def labBin(archivo):
                     a[i][j] = b[j]
     return a
 
+
+def Cube():
+    glClearColor(0.0, 0.0, 0.0, 1.0)
+    glEnable(GL_DEPTH_TEST)
+    
+    # Configurar iluminación
+    glEnable(GL_LIGHTING)
+    glEnable(GL_LIGHT0)
+    
+    light_position = [1.0, 1.0, 1.0, 0.0]  # Posición de la luz
+    light_diffuse = [1.0, 1.0, 1.0, 1.0]   # Color de la luz
+    light_specular = [1.0, 1.0, 1.0, 1.0]  # Color de la luz especular
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position)
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse)
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular)
+
+    vertices = (
+    (1, 21, -1),  
+    (1, 23, -1),  
+    (-1, 23, -1), 
+    (-1, 21, -1), 
+    (1, 21, 1),   
+    (1, 23, 1),   
+    (-1, 21, 1),  
+    (-1, 23, 1), 
+)
+    vertices_ajustados = tuple(
+    (x, y + 15, z - 5)
+    for x, y, z in vertices
+)
+
+    edges = (
+    (0, 1),
+    (1, 2),
+    (2, 3),
+    (3, 0),
+    (4, 5),
+    (5, 6),
+    (6, 7),
+    (7, 4),
+    (0, 4),
+    (1, 5),
+    (2, 6),
+    (3, 7),
+)
+
+    surfaces = (
+    (0, 1, 2, 3),
+    (3, 2, 7, 6),
+    (6, 7, 5, 4),
+    (4, 5, 1, 0),
+    (1, 5, 7, 2),
+    (4, 0, 3, 6),
+)
+
+    glBegin(GL_QUADS)
+    for surface in surfaces:
+        for vertex in surface:
+            glVertex3fv(vertices_ajustados[vertex])
+    glEnd()
+
+    glBegin(GL_LINES)
+    for edge in edges:
+        for vertex in edge:
+            glVertex3fv(vertices_ajustados[vertex])
+    glEnd()
+
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((800, 600), DOUBLEBUF | OPENGL)
@@ -355,6 +423,11 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         camera.update()
+
+        glPushMatrix()
+        glRotatef(100, 9, 5, 5)  # Ajusta la rotación del cubo
+        Cube()
+        glPopMatrix()
 
         obj.render()
 
@@ -553,6 +626,6 @@ def main():
 
     pygame.mouse.set_visible(True)  # Mostrar el cursor al salir
     pygame.quit()
-
-if __name__ == "__main__":
+if  __name__== "__main__":
     main()
+    
