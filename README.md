@@ -71,6 +71,9 @@ https://www.youtube.com/watch?v=GMBqjxcKogA
 
 https://dev.to/suvink/graphic-designing-using-opengl-and-python-beginners-1i4f
 
+game video
+
+
 Notes:
 
 Runaway! was created for a university project.
