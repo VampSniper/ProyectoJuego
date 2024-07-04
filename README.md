@@ -72,7 +72,7 @@ https://www.youtube.com/watch?v=GMBqjxcKogA
 https://dev.to/suvink/graphic-designing-using-opengl-and-python-beginners-1i4f
 
 game video
-
+https://drive.google.com/drive/folders/1-TlfX4aVjVL3umLEQCo4Yt0YHlSF_7Z_?usp=drive_link
 
 Notes:
 
@@ -88,6 +88,6 @@ movimientos
 Developers
 -Bojorge Boniche Miguel Ángel          2022-0264U 
 -José Luis de Jesús Castilli Esquivel  2022-0248U
--Rivas Sevilla Samantha Guadalupe      2013-43779U
+-Rivas Sevilla Samantha Guadalupe      2013-43779
 -Roberto de Jesús Miranda Gavarrete    2022-0367U
 
