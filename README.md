@@ -15,7 +15,7 @@ have a moon, which affects the lighting in the maze and de cadejo. The principal
 character its in first person. Viewers can see the moon using the camera perspective. 
 During the character walk's, the audience can look around using the mouse.
 
-![image](https://github.com/VampSniper/ProyectoJuego/assets/110701630/6a0fdbcc-16b4-4dc9-92b1-e104628b4355)
+![image](https://github.com/VampSniper/ProyectoJuego/assets/110701630/c0a76290-faf3-4483-a881-e90c4fb54f9d)
 
 
 
@@ -38,6 +38,7 @@ Which you can configure the volume, if you want to pause it, unpause it or play
 another song.
 When you go back, you return to the previous menu to start the game.
 
+![image](https://github.com/VampSniper/ProyectoJuego/assets/110701630/6a0fdbcc-16b4-4dc9-92b1-e104628b4355)
 ![image](https://github.com/VampSniper/ProyectoJuego/assets/110701630/42d6584d-979e-4c00-9313-40c836db8da4)
 
 
@@ -82,9 +83,8 @@ menu
 movimientos
 
 Developers
--Bojorge Boniche Miguel Ángel          2022-0264U
+-Bojorge Boniche Miguel Ángel          2022-0264U 
 -José Luis de Jesús Castilli Esquivel  2022-0248U
 -Rivas Sevilla Samantha Guadalupe      2013-43779U
 -Roberto de Jesús Miranda Gavarrete    2022-0367U
 
-*agregar el hipervinculo de nuestros github*
