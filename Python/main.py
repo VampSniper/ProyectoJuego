@@ -238,17 +238,17 @@ def it_follows_you(pos_jugador, pos_enemigo, v, c, obj):
 def draw_axes(length):
     glBegin(GL_LINES)
     
-    # Eje X - Rojo
+    # Axis X - Red
     glColor3f(1.0, 0.0, 0.0)
     glVertex3f(0.0, 0.0, 0.0)
     glVertex3f(length, 0.0, 0.0)
 
-    # Eje Y - Verde
+    # Axis Y - Green
     glColor3f(0.0, 1.0, 0.0)
     glVertex3f(0.0, 0.0, 0.0)
     glVertex3f(0.0, length, 0.0)
 
-    # Eje Z - Azul
+    # Axis Z - Blue
     glColor3f(0.0, 0.0, 1.0)
     glVertex3f(0.0, 0.0, 0.0)
     glVertex3f(0.0, 0.0, length)
@@ -267,7 +267,7 @@ def labBin(archivo):
         a = [[0 for _ in range(19)] for _ in range(11)]
         for i in range(0, 11, 1):
             if i < len(lineas):
-                b = ''.join(lineas[i][j] for j in range(1, 57, 3))  # Saltear columnas de por medio
+                b = ''.join(lineas[i][j] for j in range(1, 57, 3))  # Skip columns in between
 
                 for j in range(min(19, len(b))):
                     a[i][j] = b[j]
